@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div class="grid-container">
+    {% for cake in cakes %}
+    {% if cake.in_stock %}
+    <div class="card">
+        <img src="{% static cake.image %}" alt="{{ cake.title }}">
+        <h2>{{ cake.title }}</h2>
+        <p>{{ cake.content|truncatewords:10 }}</p>
+        <a href="{% url 'cake_detail' cake.id %}" class="btn">Подробнее</a>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}
