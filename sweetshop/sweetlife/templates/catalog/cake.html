@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>{{cake.title}}</h1>
+{% if cake.image %}
+<p ><img class="img-article-left"
+src="{% static 'catalog/images/' %}{{ cake.image }}"></p>
+{% endif %}
+{{cake.content|linebreaks}}
+{% endblock %}

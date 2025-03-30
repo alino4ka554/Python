@@ -1,29 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from .models import Dessert
 from django.shortcuts import render
 from django.urls import reverse
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
     {'title': "Обратная связь", 'url_name': 'contact'},
     {'title': "Войти", 'url_name': 'login'}
-]
-
-data_db = [
-    {'id': 1, 'title': 'Заварное пирожное с Фисташковым кремом', 'content':
-        'Нежное заварное пирожное с хрустящей корочкой, воздушным фисташковым кремом и свежими ягодами для яркого вкуса.', 
-        'in_stock': True, 'image': 'catalog/images/fistashka.jpg'},
-    {'id': 2, 'title': 'Пирожное Красный бархат', 'content':
-        'Нежное пирожное «Красный бархат» с воздушным шоколадным бисквитом, пропитанным сливочным кремом, и легкими ванильными нотками.', 
-        'in_stock': True, 'image': 'catalog/images/redbarhat.jpg'},
-    {'id': 3, 'title': 'Печенье NY Cookies', 'content':
-        'Американское домашнее печенье с колотым шоколадом или орешками.', 
-        'in_stock': True, 'image': 'catalog/images/cookies.jpg'},
-    {'id': 4, 'title': 'Пирожное Шоколадная Картошка', 'content':
-        'Классическое пирожное «Шоколадная картошка» с насыщенным вкусом, покрытое мягким шоколадным ганашем.', 
-        'in_stock': False, 'image': 'catalog/images/chocolate.jpg'},
-    {'id': 5, 'title': 'Чизкейк Нью-Йорк с малиной', 'content':
-        'Чизкейк «Нью-Йорк» с нежной сливочной текстурой на хрустящем корже, украшенный свежей малиной.', 
-        'in_stock': True, 'image': 'catalog/images/ny.jpg'},
 ]
 
 cats_db = [
@@ -38,7 +21,7 @@ def index(request):
     data = {
         'title': '',
         'menu': menu,
-        'cakes': data_db
+        'cakes': Dessert.stocked.all()
     }
     return render(request, 'catalog/index.html', context=data)
 
@@ -51,8 +34,15 @@ def contact(request):
 def login(request):
     return HttpResponse("Авторизация")
 
-def cake_detail(request, cake_id):
-    return HttpResponse(f"Отображение пирожного с id = {cake_id}")
+def cake_detail(request, cake_slug):
+    cake = get_object_or_404(Dessert, slug=cake_slug)
+    data = {
+        'title': cake.title,
+        'menu': menu,
+        'cake': cake,
+        'cat_selected': 1,
+    }
+    return render(request, 'catalog/cake.html', context=data)
 
 def categories(request, category_id):
     data = {
