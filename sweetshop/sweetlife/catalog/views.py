@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from .models import Dessert
+from .models import Dessert, Category, TagDessert
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -21,7 +21,8 @@ def index(request):
     data = {
         'title': '',
         'menu': menu,
-        'cakes': Dessert.stocked.all()
+        'cakes': Dessert.stocked.all(),
+        'cat_selected': 0,
     }
     return render(request, 'catalog/index.html', context=data)
 
@@ -44,19 +45,29 @@ def cake_detail(request, cake_slug):
     }
     return render(request, 'catalog/cake.html', context=data)
 
-def categories(request, category_id):
+def show_tag_dessert(request, tag_slug):
+    tag = get_object_or_404(TagDessert, slug=tag_slug)
+    cakes = tag.tags.filter(in_stock=Dessert.Status.INSTOCK)
     data = {
-        'title': cats_db[category_id-1]['name'],
+        'title': f'Тег: {tag.tag}',
         'menu': menu,
-        'cakes': [],
-        'cat_selected': category_id,
+        'cakes': cakes,
+        'cat_selected': None,
     }
     return render(request, 'catalog/index.html', context=data)
 
+
 def categories_by_slug(request, category_slug):
-    if request.GET:
-        print(request.GET)
-    return HttpResponse(f"<h1>Десерты по категории slug {category_slug} <h1>")
+    category = get_object_or_404(Category, slug=category_slug)
+    cakes = Dessert.stocked.filter(category_id=category.pk)
+    data = {
+        'title': category.name,
+        'menu': menu,
+        'cakes': cakes,
+        'cat_selected': category.pk,
+    }
+    return render(request, 'catalog/index.html', context=data)
+
 
 def dessert_detail(request, name):
     if name == 'eclair':

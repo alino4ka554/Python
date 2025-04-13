@@ -1,10 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-<h1>{{cake.title}}</h1>
-{% if cake.image %}
-<p ><img class="img-article-left"
-src="{% static 'catalog/images/' %}{{ cake.image }}"></p>
-{% endif %}
-{{cake.content|linebreaks}}
+<div class="dessert-detail">
+  <div class="dessert-info">
+    <h1 class="dessert-title">{{ cake.title }}</h1>
+
+    <p class="dessert-description">{{ cake.content|linebreaks }}</p>
+
+    {% if cake.info %}
+    <div class="dessert-composition">
+      <h3>Состав:</h3>
+      <p>{{ cake.info.ingredients|linebreaks }}</p>
+
+      {% if cake.info.calories %}
+      <p class="dessert-calories"><strong>Калорийность:</strong> {{ cake.info.calories }} ккал</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="dessert-image">
+    {% if cake.image %}
+    <img src="{% static 'catalog/images/' %}{{ cake.image }}" alt="{{ cake.title }}">
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
