@@ -22,4 +22,6 @@ urlpatterns = [
     path('', include('catalog.urls'))
 ]
 
+admin.site.site_header = "Панель администрирования"
+admin.site.index_title = "Кондитерская SweetLife"
 handler404 = 'catalog.views.page_not_found'

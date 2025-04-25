@@ -11,17 +11,27 @@ class Dessert(models.Model):
     class Status(models.IntegerChoices):
         OUTOFSTOCK = 0, 'Нет в наличии'
         INSTOCK = 1, 'В наличии'
-    title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
-    in_stock = models.BooleanField(choices=Status.choices,
-                                   default=Status.OUTOFSTOCK)
-    image = models.ImageField(blank=True, null=True)
-    slug = models.SlugField(max_length=255, db_index=True, unique=True)
+    class Meta:
+        verbose_name = 'Десерт'
+        verbose_name_plural = 'Десерты'
+    title = models.CharField(max_length=255, verbose_name="Название")
+    content = models.TextField(blank=True, verbose_name="Описание")
+    in_stock = models.BooleanField(choices=tuple(map(lambda x:
+                                (bool(x[0]), x[1]), Status.choices)),
+                                   default=Status.OUTOFSTOCK,
+                                   verbose_name="Статус")
+    image = models.ImageField(blank=True, null=True, 
+                              verbose_name="Изображение")
+    slug = models.SlugField(max_length=255, db_index=True, unique=True,
+                            verbose_name="Слаг")
     objects = models.Manager()
     stocked = InStockModel()
     category = models.ForeignKey('Category', on_delete=models.CASCADE,
-                                 related_name='desserts')
-    tags = models.ManyToManyField('TagDessert', blank=True, related_name='tags')
+                                 related_name='desserts',
+                                 verbose_name="Категория")
+    tags = models.ManyToManyField('TagDessert', blank=True,
+                                  related_name='tags',
+                                  verbose_name="Теги")
 
 
 
@@ -45,10 +55,14 @@ class TagDessert(models.Model):
 
 
 class Category(models.Model):
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
     name = models.CharField(max_length=100,
-                            db_index=True)
+                            db_index=True, verbose_name='Название')
     slug = models.SlugField(max_length=255,
-                            unique=True, db_index=True)
+                            unique=True, db_index=True,
+                            verbose_name='Слаг')
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'category_slug': self.slug})   
