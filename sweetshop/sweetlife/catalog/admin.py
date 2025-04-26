@@ -18,6 +18,9 @@ class IngredientsFilter(admin.SimpleListFilter):
 
 @admin.register(Dessert)
 class DessertAdmin(admin.ModelAdmin):
+    fields = ['title', 'content', 'slug', 'category', 'tags']
+    filter_horizontal = ['tags']
+    prepopulated_fields = {"slug": ("title",)}
     list_display = ('title', 'in_stock', 'category', 'brief_info', 'tags_count')
     list_display_links = ('title', )
     ordering = ['in_stock', 'title']
@@ -45,6 +48,7 @@ class DessertAdmin(admin.ModelAdmin):
         count = queryset.update(in_stock=Dessert.Status.OUTOFSTOCK)
         self.message_user(request, f"{count} десерта(ов) убраны из каталога!",
                           messages.WARNING)
+
 
 
 @admin.register(Category)
