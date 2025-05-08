@@ -26,6 +26,7 @@ class Dessert(models.Model):
                             verbose_name="Слаг")
     objects = models.Manager()
     stocked = InStockModel()
+    price = models.IntegerField(default=0)
     category = models.ForeignKey('Category', on_delete=models.CASCADE,
                                  related_name='desserts',
                                  verbose_name="Категория")

@@ -3,8 +3,11 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from .models import Dessert, Category, TagDessert
 from django.shortcuts import render
 from django.urls import reverse
+from .forms import AddDessertForm
 
-menu = [{'title': "О сайте", 'url_name': 'about'},
+menu = [
+    {'title': "Добавить десерт", 'url_name': 'add_dessert'},
+    {'title': "О сайте", 'url_name': 'about'},
     {'title': "Обратная связь", 'url_name': 'contact'},
     {'title': "Войти", 'url_name': 'login'}
 ]
@@ -26,8 +29,20 @@ def index(request):
     }
     return render(request, 'catalog/index.html', context=data)
 
+def add_dessert(request):
+    if request.method == 'POST':
+        form = AddDessertForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddDessertForm()
+    return render(request, 'catalog/add_dessert.html',
+                  {'menu': menu, 'title': 'Добавление десерта', 'form': form})
+
+
 def about(request):
-    return render(request, 'catalog/about.html', {'title': 'О сайте', 'menu': menu})
+    return render(request, 'catalog/about.html', {'title': 'О сайте',
+                                                  'menu': menu})
 
 def contact(request):
     return HttpResponse("Обратная связь")
