@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from .models import Dessert, Category, TagDessert
 from django.shortcuts import render
@@ -33,7 +33,11 @@ def add_dessert(request):
     if request.method == 'POST':
         form = AddDessertForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            try:
+                Dessert.objects.create(**form.cleaned_data)
+                return redirect('index')
+            except:
+                form.add_error(None, 'Ошибка добавления поста')
     else:
         form = AddDessertForm()
     return render(request, 'catalog/add_dessert.html',
