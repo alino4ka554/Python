@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import Dessert, Category
 
 class IngredientsFilter(admin.SimpleListFilter):
@@ -18,10 +19,13 @@ class IngredientsFilter(admin.SimpleListFilter):
 
 @admin.register(Dessert)
 class DessertAdmin(admin.ModelAdmin):
-    fields = ['title', 'content', 'slug', 'category', 'tags']
+    fields = ['title', 'content', 'slug', 'category', 'tags', 'image',
+              'dessert_image']
     filter_horizontal = ['tags']
     prepopulated_fields = {"slug": ("title",)}
-    list_display = ('title', 'in_stock', 'category', 'brief_info', 'tags_count')
+    list_display = ('title', 'in_stock', 'category', 'tags_count',
+                    'dessert_image')
+    readonly_fields = ['dessert_image']
     list_display_links = ('title', )
     ordering = ['in_stock', 'title']
     list_editable = ('in_stock', )
@@ -30,9 +34,11 @@ class DessertAdmin(admin.ModelAdmin):
     search_fields = ['title', 'category__name']
     list_filter = [IngredientsFilter, 'category__name', 'in_stock']
 
-    @admin.display(description="Краткое описание")
-    def brief_info(self, dessert: Dessert):
-        return f"Описание {len(dessert.content)} символов."
+    @admin.display(description="Изображение")
+    def dessert_image(self, dessert: Dessert):
+        if dessert.image:
+            return mark_safe(f"<img src='{dessert.image.url}'width=50>")
+        return "Без изображения"
     
     @admin.display(description="Количество тегов")
     def tags_count(self, dessert: Dessert):

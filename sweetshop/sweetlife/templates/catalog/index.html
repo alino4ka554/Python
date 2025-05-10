@@ -7,7 +7,9 @@
 <div class="grid-container">
     {% for cake in cakes %}
     <div class="card">
-        <img src="{% static 'catalog/images/' %}{{ cake.image }}" alt="{{ cake.title }}">
+        {% if cake.image %}
+        <img src="{{ cake.image.url }}" alt="{{ cake.title }}">
+        {% endif %}
         <h2>{{ cake.title }}</h2>
         <p>{{ cake.content|truncatewords:10 }}</p>
         <p>{{ cake.price }} ₽</p>

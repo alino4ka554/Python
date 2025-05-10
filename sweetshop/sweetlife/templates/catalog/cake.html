@@ -22,7 +22,7 @@
 
   <div class="dessert-image">
     {% if cake.image %}
-    <img src="{% static 'catalog/images/' %}{{ cake.image }}" alt="{{ cake.title }}">
+    <img src="{{ cake.image.url }}" alt="{{ cake.title }}">
     {% endif %}
   </div>
 </div>

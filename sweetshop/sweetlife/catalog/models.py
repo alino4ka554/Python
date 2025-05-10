@@ -20,7 +20,8 @@ class Dessert(models.Model):
                                 (bool(x[0]), x[1]), Status.choices)),
                                    default=Status.OUTOFSTOCK,
                                    verbose_name="Статус")
-    image = models.ImageField(blank=True, null=True, 
+    image = models.ImageField(blank=True, null=True,
+                              upload_to="images/%Y/%m/%d/",
                               verbose_name="Изображение")
     slug = models.SlugField(max_length=255, db_index=True, unique=True,
                             verbose_name="Слаг")
