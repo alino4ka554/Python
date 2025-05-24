@@ -5,14 +5,16 @@ from catalog import views, converters
 register_converter(converters.DessertSlugConverter, 'dessert')
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('category/<slug:category_slug>/', views.categories_by_slug, 
+    path('', views.CaralogIndex.as_view(), name='index'),
+    path('category/<slug:category_slug>/', views.DessertCategory.as_view(),
          name='category'),
     path('dessert/<dessert:name>/', views.dessert_detail, name='dessert_detail'),
-    path('cake/<slug:cake_slug>/', views.cake_detail, name='cake'),
-    path('tag/<slug:tag_slug>/', views.show_tag_dessert, name='tag'),
+    path('cake/<slug:cake_slug>/', views.ShowCake.as_view(), name='cake'),
+    path('tag/<slug:tag_slug>/', views.TagDessertList.as_view(), name='tag'),
     path('about/', views.about, name='about'),
     path('login/', views.login, name='login'),
     path('contact/', views.contact, name='contact'),
-    path('add_dessert/', views.add_dessert, name='add_dessert')
+    path('add_dessert/', views.AddDessert.as_view(), name='add_dessert'),
+    path('edit/<slug:slug>/', views.UpdateDessert.as_view(), name='edit_dessert'),
+    path('delete/<slug:slug>/', views.DeleteDessert.as_view(), name='delete_dessert')
 ]
