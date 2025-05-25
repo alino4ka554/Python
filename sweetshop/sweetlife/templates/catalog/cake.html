@@ -6,7 +6,7 @@
   <div class="dessert-info">
     <h1 class="dessert-title">{{ cake.title }}</h1>
 
-    <p class="dessert-description">{{ cake.content|linebreaks }}</p>
+    <div class="dessert-description">{{ cake.content|linebreaks }}</div>
 
     {% if cake.info %}
     <div class="dessert-composition">
@@ -14,7 +14,9 @@
       <p>{{ cake.info.ingredients|linebreaks }}</p>
 
       {% if cake.info.calories %}
-      <p class="dessert-calories"><strong>Калорийность:</strong> {{ cake.info.calories }} ккал</p>
+      <div class="dessert-calories">
+        <p><strong>Калорийность:</strong> {{ cake.info.calories }} ккал</p>
+      </div>
       {% endif %}
     </div>
     {% endif %}
@@ -25,5 +27,30 @@
     <img src="{{ cake.image.url }}" alt="{{ cake.title }}">
     {% endif %}
   </div>
+</div>
+
+<div class="comments-section">
+  <h2>Комментарии</h2>
+  <form method="post" action="{% url 'add_comment' cake_slug=cake.slug %}" class="comment-form">
+    {% csrf_token %}
+    {{ comment_form.text }}
+    <button type="submit" class="comment-submit">Добавить комментарий</button>
+  </form>
+
+  {% if comments %}
+  <div class="comments-list">
+    {% for comment in comments %}
+    <div class="comment">
+      <div class="comment-text">{{ comment.text }}</div>
+      <div class="comment-meta">
+        <span class="comment-author">Автор: {{ comment.author.username|default:"неизвестен" }}</span>
+        <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>Пока нет комментариев</p>
+  {% endif %}
 </div>
 {% endblock %}

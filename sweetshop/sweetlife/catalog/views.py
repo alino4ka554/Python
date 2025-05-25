@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from .models import Dessert, Category, TagDessert
+from .models import Dessert, Category, TagDessert, Comment
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 import uuid
@@ -10,8 +10,11 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .forms import AddDessertForm, UploadFileForm
+from .forms import AddDessertForm, UploadFileForm, CommentForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import DataMixin
+
 
 menu = [
     {'title': "Добавить десерт", 'url_name': 'add_dessert'},
@@ -72,6 +75,8 @@ class ShowCake(DataMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()
+        context['comment_form'] = CommentForm()
         return self.get_mixin_context(context, title=context['cake'])
     
     def get_object(self, queryset=None):
@@ -86,6 +91,23 @@ class AddDessert(DataMixin, CreateView):
     success_url = reverse_lazy('index')
     fields = '__all__'
     title_cake = 'Добавление десерта'
+
+class AddComment(LoginRequiredMixin, CreateView):
+    form_class = CommentForm
+    template_name = 'catalog/cake.html'
+    login_url = reverse_lazy('users:login')
+    
+    def get_success_url(self):
+        return reverse('cake', kwargs={'cake_slug': self.kwargs['cake_slug']})
+    
+    def form_valid(self, form):
+        d = form.save(commit=False)
+        d.author = self.request.user
+        form.instance.dessert = get_object_or_404(Dessert.stocked, slug=self.kwargs['cake_slug'])
+        return super().form_valid(form)
+    
+    def get(self, request, *args, **kwargs):
+        return redirect('cake', cake_slug=self.kwargs['cake_slug'])
 
 
 class UpdateDessert(UpdateView):
@@ -112,7 +134,7 @@ def handle_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
 
-
+@login_required
 def about(request):
     contact_list = Dessert.stocked.all()
     paginator = Paginator(contact_list, 3)

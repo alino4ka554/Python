@@ -2,7 +2,6 @@ from django import template
 from django.db.models import Count
 from catalog.models import Category, TagDessert
 
-
 register = template.Library()
 
 @register.inclusion_tag('catalog/list_categories.html')

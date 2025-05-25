@@ -10,6 +10,7 @@ urlpatterns = [
          name='category'),
     path('dessert/<dessert:name>/', views.dessert_detail, name='dessert_detail'),
     path('cake/<slug:cake_slug>/', views.ShowCake.as_view(), name='cake'),
+    path('cake/<slug:cake_slug>/comment/', views.AddComment.as_view(), name='add_comment'),
     path('tag/<slug:tag_slug>/', views.TagDessertList.as_view(), name='tag'),
     path('about/', views.about, name='about'),
     path('login/', views.login, name='login'),

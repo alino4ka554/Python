@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 
 class InStockModel(models.Manager):
@@ -81,3 +82,29 @@ class DessertInfo(models.Model):
 
     def __str__(self):
         return self.dessert.title
+    
+
+class Comment(models.Model):
+    text = models.TextField(verbose_name='Текст')
+    dessert = models.ForeignKey(
+        Dessert,
+        on_delete=models.CASCADE,
+        verbose_name='Комментарий',
+        related_name='comments'
+    )
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,
+                               related_name='comments', null=True, default=None)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Добавлено'
+    )
+
+    class Meta:
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарий'
+        ordering = ('created_at',)
+
+    def __str__(self) -> str:
+        text = str(self.text)
+        return text[:20]
+

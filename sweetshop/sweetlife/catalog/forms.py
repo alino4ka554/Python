@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Dessert, TagDessert
+from .models import Category, Dessert, TagDessert, Comment
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.core.validators import MinLengthValidator, MaxLengthValidator
@@ -64,3 +64,12 @@ class AddDessertForm(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField(label="Файл")
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Введите ваш комментарий...'})
+        }

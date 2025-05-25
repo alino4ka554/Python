@@ -669,3 +669,101 @@ ul.lang-list li a:hover {color: #fdc073;}
     transform: translateY(0);
     box-shadow: none;
 }
+
+/* Стили для комментариев */
+.comments-section {
+    margin: 40px 0;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comments-section h2 {
+    color: #5e1e1e;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment {
+    padding: 15px;
+    background: #f8f5f5;
+    border-radius: 8px;
+    border-left: 4px solid #d68f8f;
+}
+
+.comment-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.comment-date {
+    font-size: 14px;
+    color: #666;
+    text-align: right;
+}
+
+/* Стили для формы комментариев */
+.comment-form {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f5f5;
+    border-radius: 8px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d68f8f;
+    border-radius: 6px;
+    resize: vertical;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: #945454;
+    box-shadow: 0 0 0 2px rgba(148, 84, 84, 0.1);
+}
+
+.comment-submit {
+    background: #d68f8f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.comment-submit:hover {
+    background: #945454;
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.comment-author {
+    font-weight: 500;
+    color: #333;
+}
+
+.comment-date {
+    color: #888;
+}
