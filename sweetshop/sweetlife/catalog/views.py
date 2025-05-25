@@ -5,11 +5,13 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 import uuid
 from django.db import models
+from django.core.paginator import Paginator
 from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .forms import AddDessertForm, UploadFileForm
+from .utils import DataMixin
 
 menu = [
     {'title': "Добавить десерт", 'url_name': 'add_dessert'},
@@ -18,29 +20,19 @@ menu = [
     {'title': "Войти", 'url_name': 'login'}
 ]
 
-cats_db = [
- {'id': 1, 'name': 'Пирожные'},
- {'id': 2, 'name': 'Торты'},
- {'id': 3, 'name': 'Печенье'},
-]
-
-
-class CaralogIndex(ListView):
+class CaralogIndex(DataMixin, ListView):
     template_name = 'catalog/index.html'
     context_object_name = 'cakes'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
-        context['menu'] = menu
-        context['cat_selected'] = 0
-        return context
+        return self.get_mixin_context(super().get_context_data(**kwargs),
+                                      title='', cat_selected=0)
     
     def get_queryset(self):
         return Dessert.stocked.all().select_related('category')
 
 
-class DessertCategory(ListView):
+class DessertCategory(DataMixin, ListView):
     template_name = 'catalog/index.html'
     context_object_name = 'cakes'
     allow_empty = False
@@ -48,17 +40,16 @@ class DessertCategory(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         category = context['cakes'][0].category
-        context['title'] = category.name
-        context['menu'] = menu
-        context['cat_selected'] = category.id
-        return context
+        return self.get_mixin_context(super().get_context_data(**kwargs),
+                                      title=category.name,
+                                      cat_selected=category.id)
     
     def get_queryset(self):
         return Dessert.stocked.filter(
             category__slug=self.kwargs['category_slug']).select_related('category')
 
 
-class TagDessertList(ListView):
+class TagDessertList(DataMixin, ListView):
     template_name = 'catalog/index.html'
     context_object_name = 'cakes'
     allow_empty = False
@@ -66,17 +57,14 @@ class TagDessertList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         tag = TagDessert.objects.get(slug=self.kwargs['tag_slug'])
-        context['title'] = 'Тег: ' + tag.tag
-        context['menu'] = menu
-        context['cat_selected'] = None
-        return context
+        return self.get_mixin_context(context, title='Тег: ' + tag.tag)
     
     def get_queryset(self):
         return Dessert.stocked.filter(
             tags__slug=self.kwargs['tag_slug']).select_related('category')
 
 
-class ShowCake(DetailView):
+class ShowCake(DataMixin, DetailView):
     model = Dessert
     template_name = 'catalog/cake.html'
     slug_url_kwarg = 'cake_slug'
@@ -84,36 +72,34 @@ class ShowCake(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = context['cake']
-        context['menu'] = menu
-        return context
+        return self.get_mixin_context(context, title=context['cake'])
     
     def get_object(self, queryset=None):
         return get_object_or_404(Dessert.stocked,
                                  slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddDessert(CreateView):
+class AddDessert(DataMixin, CreateView):
         # form_class = AddDessertForm
-        model = Dessert
-        template_name = 'catalog/add_dessert.html'
-        success_url = reverse_lazy('index')
-        fields = '__all__'
-        extra_context = { 'menu': menu, 'title': 'Добавление десерта', }
+    model = Dessert
+    template_name = 'catalog/add_dessert.html'
+    success_url = reverse_lazy('index')
+    fields = '__all__'
+    title_cake = 'Добавление десерта'
 
 
 class UpdateDessert(UpdateView):
-        model = Dessert
-        template_name = 'catalog/add_dessert.html'
-        success_url = reverse_lazy('index')
-        fields = ['title', 'content', 'in_stock', 'image', 'price', 'category']
-        extra_context = { 'menu': menu, 'title': 'Редактирование десерта', }
+    model = Dessert
+    template_name = 'catalog/add_dessert.html'
+    success_url = reverse_lazy('index')
+    fields = ['title', 'content', 'in_stock', 'image', 'price', 'category']
+    title_cake = 'Редактирование десерта'
 
 class DeleteDessert(DeleteView):
     model = Dessert
     template_name = 'catalog/delete_dessert.html'
     success_url = reverse_lazy('index')
-    extra_context = { 'menu': menu, 'title': 'Удаление десерта', }
+    title_cake = 'Удаление десерта'
 
 def handle_uploaded_file(f):
     name = f.name
@@ -128,14 +114,13 @@ def handle_uploaded_file(f):
 
 
 def about(request):
-    if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file(form.cleaned_data['file'])
-    else:
-        form = UploadFileForm()
-    return render(request, 'catalog/about.html', {'title': 'О сайте',
-                                                  'menu': menu, 'form': form})
+    contact_list = Dessert.stocked.all()
+    paginator = Paginator(contact_list, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'catalog/about.html', {'page_obj': page_obj,
+                                                  'title': 'О сайте',
+                                                  'menu': menu})
 
 def contact(request):
     return HttpResponse("Обратная связь")
