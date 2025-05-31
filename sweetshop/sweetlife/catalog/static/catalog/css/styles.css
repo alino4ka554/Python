@@ -11,6 +11,140 @@ html, body {
     text-align: center;
 }
 
+.dessert-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dessert-header {
+  margin-bottom: 30px;
+}
+
+.dessert-title {
+  font-size: 2.5em;
+  color: #333;
+  margin: 0;
+}
+
+.dessert-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.dessert-image-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dessert-image {
+  width: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dessert-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.dessert-price {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.price-value {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.price-currency {
+  font-size: 1em;
+  color: #666;
+  margin-left: 5px;
+}
+
+.dessert-info {
+  padding: 20px;
+}
+
+.dessert-description {
+  font-size: 1.2em;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.dessert-composition {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.dessert-composition h3 {
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.dessert-calories {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 768px) {
+  .dessert-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .dessert-header {
+    text-align: center;
+  }
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.comment-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.delete-comment {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.delete-comment:hover {
+  background: #c82333;
+}
+
+.comment-date {
+  color: #666;
+}
+
 #topcategories {
     list-style: none;
     margin: 0;

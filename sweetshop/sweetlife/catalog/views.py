@@ -14,13 +14,13 @@ from .forms import AddDessertForm, UploadFileForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import DataMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 
 
 menu = [
-    {'title': "Добавить десерт", 'url_name': 'add_dessert'},
     {'title': "О сайте", 'url_name': 'about'},
     {'title': "Обратная связь", 'url_name': 'contact'},
-    {'title': "Войти", 'url_name': 'login'}
 ]
 
 class CaralogIndex(DataMixin, ListView):
@@ -84,13 +84,14 @@ class ShowCake(DataMixin, DetailView):
                                  slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddDessert(DataMixin, CreateView):
+class AddDessert(PermissionRequiredMixin, DataMixin, CreateView):
         # form_class = AddDessertForm
     model = Dessert
     template_name = 'catalog/add_dessert.html'
     success_url = reverse_lazy('index')
     fields = '__all__'
     title_cake = 'Добавление десерта'
+    permission_required = 'catalog.add_dessert'
 
 class AddComment(LoginRequiredMixin, CreateView):
     form_class = CommentForm
@@ -110,18 +111,32 @@ class AddComment(LoginRequiredMixin, CreateView):
         return redirect('cake', cake_slug=self.kwargs['cake_slug'])
 
 
-class UpdateDessert(UpdateView):
+class UpdateDessert(PermissionRequiredMixin, UpdateView):
     model = Dessert
     template_name = 'catalog/add_dessert.html'
     success_url = reverse_lazy('index')
     fields = ['title', 'content', 'in_stock', 'image', 'price', 'category']
     title_cake = 'Редактирование десерта'
+    permission_required = 'catalog.change_dessert'
 
 class DeleteDessert(DeleteView):
     model = Dessert
     template_name = 'catalog/delete_dessert.html'
     success_url = reverse_lazy('index')
     title_cake = 'Удаление десерта'
+
+class DeleteComment(PermissionRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'catalog/cake.html'
+    success_url = reverse_lazy('cake')
+    permission_required = 'catalog.delete_comment'
+    
+    def get_success_url(self):
+        return reverse('cake', kwargs={'cake_slug': self.object.dessert.slug})
+    
+    def get_object(self, queryset=None):
+        comment = super().get_object(queryset)
+        return comment
 
 def handle_uploaded_file(f):
     name = f.name
