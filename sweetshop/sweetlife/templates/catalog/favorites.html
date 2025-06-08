@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+{% if cakes %}
+<div class="grid-container">
+    {% for cake in cakes %}
+    <div class="card">
+        {% if cake.image %}
+        <img src="{{ cake.image.url }}" alt="{{ cake.title }}">
+        {% endif %}
+        <h2>{{ cake.title }}</h2>
+        <p>{{ cake.content|truncatewords:10 }}</p>
+        <p>{{ cake.price }} ₽</p>
+        <a href="{{ cake.get_absolute_url }}" class="btn">Подробнее</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-favorites">
+    <p>У вас пока нет избранных десертов</p>
+    <p>Нажмите на сердечко рядом с понравившимся десертом, чтобы добавить его в избранное</p>
+</div>
+{% endif %}
+
+<style>
+.no-favorites {
+    text-align: center;
+    padding: 40px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.no-favorites p {
+    margin: 10px 0;
+    font-size: 1.1em;
+    color: #666;
+}
+
+.no-favorites p:first-child {
+    font-size: 1.3em;
+    color: #333;
+    font-weight: bold;
+}
+</style>
+{% endblock %} 

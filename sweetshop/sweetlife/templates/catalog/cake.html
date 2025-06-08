@@ -2,25 +2,34 @@
 {% load static %}
 
 {% block content %}
+{% csrf_token %}
 <div class="dessert-detail">
-  <div class="dessert-header">
-    <h1 class="dessert-title">{{ cake.title }}</h1>
-  </div>
-
   <div class="dessert-content">
-    <div class="dessert-image-container">
-      <div class="dessert-image">
-        {% if cake.image %}
-        <img src="{{ cake.image.url }}" alt="{{ cake.title }}">
+    <div class="dessert-image">
+      {% if cake.image %}
+      <img src="{{ cake.image.url }}" alt="{{ cake.title }}">
+      {% endif %}
+    </div>
+
+    <div class="dessert-info-container">
+      <div class="title-like-container">
+        <h1 class="dessert-title">{{ cake.title }}</h1>
+        {% if user.is_authenticated %}
+        <div class="like-section">
+          <button id="like-button" class="like-button {% if user in cake.likes.all %}liked{% endif %}" 
+                  data-cake-slug="{{ cake.slug }}">
+            <span class="like-icon">❤</span>
+            <span class="likes-count">{{ cake.likes.count }}</span>
+          </button>
+        </div>
         {% endif %}
       </div>
+
       <div class="dessert-price">
         <span class="price-value">Цена: {{ cake.price }}</span>
         <span class="price-currency">₽</span>
       </div>
-    </div>
 
-    <div class="dessert-info">
       <div class="dessert-description">{{ cake.content|linebreaks }}</div>
 
       {% if cake.info %}
@@ -55,7 +64,7 @@
       <div class="comment-meta">
         <span class="comment-author">Автор: {{ comment.author.username|default:"неизвестен" }}</span>
         <div class="comment-actions">
-          {% if perms.catalog.delete_comment %}
+          {% if user == comment.author or perms.catalog.delete_comment %}
           <form method="post" action="{% url 'delete_comment' pk=comment.pk %}" style="display: inline;">
             {% csrf_token %}
             <button type="submit" class="delete-comment" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">Удалить</button>
@@ -71,4 +80,26 @@
   <p>Пока нет комментариев</p>
   {% endif %}
 </div>
+
+{% if user.is_authenticated %}
+<script>
+document.getElementById('like-button').addEventListener('click', function() {
+    const button = this;
+    const cakeSlug = button.dataset.cakeSlug;
+    
+    fetch(`/cake/${cakeSlug}/like/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        button.classList.toggle('liked', data.status === 'liked');
+        button.querySelector('.likes-count').textContent = data.likes_count;
+    });
+});
+</script>
+{% endif %}
+
 {% endblock %}

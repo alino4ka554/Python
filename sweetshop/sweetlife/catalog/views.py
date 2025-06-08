@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from .models import Dessert, Category, TagDessert, Comment
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, JsonResponse
+from .models import Dessert, Category, TagDessert, Comment, Like
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 import uuid
@@ -117,26 +117,13 @@ class UpdateDessert(PermissionRequiredMixin, UpdateView):
     success_url = reverse_lazy('index')
     fields = ['title', 'content', 'in_stock', 'image', 'price', 'category']
     title_cake = 'Редактирование десерта'
-    permission_required = 'catalog.change_dessert'
+    permission_required = 'women.change_women'
 
 class DeleteDessert(DeleteView):
     model = Dessert
     template_name = 'catalog/delete_dessert.html'
     success_url = reverse_lazy('index')
     title_cake = 'Удаление десерта'
-
-class DeleteComment(PermissionRequiredMixin, DeleteView):
-    model = Comment
-    template_name = 'catalog/cake.html'
-    success_url = reverse_lazy('cake')
-    permission_required = 'catalog.delete_comment'
-    
-    def get_success_url(self):
-        return reverse('cake', kwargs={'cake_slug': self.object.dessert.slug})
-    
-    def get_object(self, queryset=None):
-        comment = super().get_object(queryset)
-        return comment
 
 def handle_uploaded_file(f):
     name = f.name
@@ -174,3 +161,36 @@ def dessert_detail(request, name):
 
 def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+
+class LikeDessert(LoginRequiredMixin, View):
+    def post(self, request, cake_slug):
+        dessert = get_object_or_404(Dessert, slug=cake_slug)
+        like, created = Like.objects.get_or_create(user=request.user, dessert=dessert)
+        
+        if not created:
+            like.delete()
+            return JsonResponse({'status': 'unliked', 'likes_count': dessert.likes.count()})
+        
+        return JsonResponse({'status': 'liked', 'likes_count': dessert.likes.count()})
+
+class DeleteComment(LoginRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'catalog/cake.html'
+    success_url = reverse_lazy('index')
+    
+    def get_success_url(self):
+        return reverse('cake', kwargs={'cake_slug': self.object.dessert.slug})
+    
+    def get_object(self, queryset=None):
+        comment = super().get_object(queryset)
+        if comment.author != self.request.user and not self.request.user.has_perm('catalog.delete_comment'):
+            raise PermissionDenied
+        return comment
+
+class FavoriteDesserts(LoginRequiredMixin, DataMixin, ListView):
+    template_name = 'catalog/favorites.html'
+    context_object_name = 'cakes'
+    title_cake = 'Избранное'
+
+    def get_queryset(self):
+        return Dessert.objects.filter(likes__user=self.request.user).select_related('category')
