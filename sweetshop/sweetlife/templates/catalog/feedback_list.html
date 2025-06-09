@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзывы{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="feedbacks-list">
+            <h2>Отзывы наших клиентов</h2>
+            {% if feedbacks %}
+                {% for feedback in feedbacks %}
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <img src="{{ feedback.user.photo.url }}">
+                            <span class="feedback-user">{{ feedback.user.username }}</span>
+                            <span class="feedback-date">{{ feedback.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <div class="feedback-message">{{ feedback.message }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Пока нет отзывов. Будьте первым!</p>
+            {% endif %}
+</div>
+{% endblock %} 

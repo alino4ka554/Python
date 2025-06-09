@@ -1,16 +1,51 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<h1>{{title}}</h1>
-{% for contact in page_obj %}
-{{ contact }}</p>
-{% endfor %}
-<nav>
-    <ul>
-        {% for p in page_obj.paginator.page_range %}
-        <li>
-            <a href="?page={{ p }}">{{ p }}</a>
-        </li>
-        {% endfor %}
-    </ul>
-</nav>
-{% endblock %}
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>О нас — Кондитерская SweetLife</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-pink-50 text-gray-800 font-sans">
+  <div class="max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-center text-pink-600 mb-6">О нашей кондитерской</h1>
+
+    <div class="bg-white shadow-xl rounded-2xl p-6 mb-8">
+      <p class="text-lg leading-relaxed">
+        Добро пожаловать в <strong>SweetLife</strong> — место, где сладкие мечты становятся реальностью! Мы создаём
+        десерты с душой, используя только натуральные ингредиенты, проверенные рецепты и щепотку любви.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white shadow-md rounded-xl p-5">
+        <h2 class="text-xl font-semibold text-pink-500 mb-2">Наша миссия</h2>
+        <p>
+          Мы стремимся радовать каждого клиента неповторимым вкусом и высоким качеством наших изделий. 
+          Будь то день рождения, свадьба или просто уютный вечер — мы рядом, чтобы сделать момент особенным.
+        </p>
+      </div>
+
+      <div class="bg-white shadow-md rounded-xl p-5">
+        <h2 class="text-xl font-semibold text-pink-500 mb-2">Что вы найдёте у нас?</h2>
+        <ul class="list-disc list-inside text-gray-700">
+          <li>Авторские торты и капкейки</li>
+          <li>Выпечка без сахара и глютена</li>
+          <li>Сезонные десерты и новинки</li>
+          <li>Возможность индивидуального заказа</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center">
+      <p class="text-lg">
+        Благодарим, что выбираете нас! Следите за новыми десертами в <a href="{% url 'index' %}" class="text-pink-600 underline">каталоге</a>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+{% endblock %} 

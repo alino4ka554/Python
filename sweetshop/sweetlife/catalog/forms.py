@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Dessert, TagDessert, Comment
+from .models import Category, Dessert, TagDessert, Comment, Feedback
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.core.validators import MinLengthValidator, MaxLengthValidator
@@ -72,4 +72,17 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
         widgets = {
             'text': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Введите ваш комментарий...'})
+        }
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['message']
+        widgets = {
+            'message': forms.Textarea(attrs={
+                'rows': 6,
+                'style': 'resize:vertical; width:100%;',
+                'placeholder': 'Введите ваш отзыв...'
+            })
         }

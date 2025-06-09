@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, JsonResponse
-from .models import Dessert, Category, TagDessert, Comment, Like
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound,  JsonResponse
+from .models import Dessert, Category, TagDessert, Comment, Feedback, Like
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 import uuid
@@ -9,13 +9,14 @@ from django.core.paginator import Paginator
 from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, DetailView
-from .forms import AddDessertForm, UploadFileForm, CommentForm
+from .forms import AddDessertForm, UploadFileForm, CommentForm, FeedbackForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import DataMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 
 menu = [
@@ -136,15 +137,9 @@ def handle_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
 
-@login_required
-def about(request):
-    contact_list = Dessert.stocked.all()
-    paginator = Paginator(contact_list, 3)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'catalog/about.html', {'page_obj': page_obj,
-                                                  'title': 'О сайте',
-                                                  'menu': menu})
+class AboutView(DataMixin, TemplateView):
+    template_name = 'catalog/about.html'
+
 
 def contact(request):
     return HttpResponse("Обратная связь")
@@ -194,3 +189,30 @@ class FavoriteDesserts(LoginRequiredMixin, DataMixin, ListView):
 
     def get_queryset(self):
         return Dessert.objects.filter(likes__user=self.request.user).select_related('category')
+    
+class ContactView(LoginRequiredMixin, DataMixin, CreateView):
+    form_class = FeedbackForm
+    template_name = 'catalog/contact.html'
+    success_url = reverse_lazy('contact')
+    title_cake = 'Обратная связь'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['feedbacks'] = Feedback.objects.all().select_related('user')
+        return context
+
+class FeedbackListView(ListView):
+    model = Feedback
+    template_name = 'catalog/feedback_list.html'
+    context_object_name = 'feedbacks'
+    ordering = ['-created_at']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Отзывы'
+        context['default_image'] = settings.DEFAULT_USER_IMAGE
+        return context

@@ -60,19 +60,28 @@
   <div class="comments-list">
     {% for comment in comments %}
     <div class="comment">
-      <div class="comment-text">{{ comment.text }}</div>
-      <div class="comment-meta">
-        <span class="comment-author">Автор: {{ comment.author.username|default:"неизвестен" }}</span>
+      <div class="comment-header">
+        <div class="comment-author-info">
+          {% if comment.author.photo %}
+            <img src="{{ comment.author.photo.url }}" alt="{{ comment.author.username }}" class="comment-avatar">
+          {% else %}
+            <img src="{{ default_image }}" alt="{{ comment.author.username }}" class="comment-avatar">
+          {% endif %}
+          <div class="comment-author-details">
+            <span class="comment-author">{{ comment.author.username|default:"неизвестен" }}</span>
+            <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+          </div>
+        </div>
+        {% if user == comment.author or perms.catalog.delete_comment %}
         <div class="comment-actions">
-          {% if user == comment.author or perms.catalog.delete_comment %}
           <form method="post" action="{% url 'delete_comment' pk=comment.pk %}" style="display: inline;">
             {% csrf_token %}
             <button type="submit" class="delete-comment" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">Удалить</button>
           </form>
-          {% endif %}
-          <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
         </div>
+        {% endif %}
       </div>
+      <div class="comment-text">{{ comment.text }}</div>
     </div>
     {% endfor %}
   </div>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="contact-container">
+    <div class="contact-header">
+        <h1>{{ title }}</h1>
+    </div>
+
+    <div class="contact-content">
+        <div class="feedback-form">
+            <h2>Оставить отзыв</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.message }}
+                    <div class="form-error">{{ form.message.errors }}</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

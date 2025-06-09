@@ -45,6 +45,18 @@ class Dessert(models.Model):
     def __str__(self):
         return self.title
 
+class Like(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='likes')
+    dessert = models.ForeignKey(Dessert, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'
+        unique_together = ('user', 'dessert')
+
+    def __str__(self):
+        return f'{self.user.username} likes {self.dessert.title}'
 
 class TagDessert(models.Model):
     tag = models.CharField(max_length=100, db_index=True)
@@ -108,17 +120,15 @@ class Comment(models.Model):
         text = str(self.text)
         return text[:20]
 
-
-class Like(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='likes')
-    dessert = models.ForeignKey(Dessert, on_delete=models.CASCADE, related_name='likes')
-    created_at = models.DateTimeField(auto_now_add=True)
+class Feedback(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='feedbacks')
+    message = models.TextField(verbose_name='Сообщение')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     class Meta:
-        verbose_name = 'Лайк'
-        verbose_name_plural = 'Лайки'
-        unique_together = ('user', 'dessert')
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f'{self.user.username} likes {self.dessert.title}'
-
+        return f'Отзыв от {self.user.username} от {self.created_at.strftime("%d.%m.%Y")}' 
