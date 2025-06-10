@@ -59,11 +59,17 @@
 
 <div class="comments-section">
   <h2>Комментарии</h2>
-  <form method="post" action="{% url 'add_comment' cake_slug=cake.slug %}" class="comment-form">
-    {% csrf_token %}
-    {{ comment_form.text }}
-    <button type="submit" class="comment-submit">Добавить комментарий</button>
-  </form>
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'add_comment' cake_slug=cake.slug %}" class="comment-form">
+      {% csrf_token %}
+      {{ comment_form.text }}
+      <button type="submit" class="comment-submit">Добавить комментарий</button>
+    </form>
+  {% else %}
+    <div class="auth-message">
+      <p>Чтобы оставить комментарий, пожалуйста, <a href="{% url 'users:login' %}?next={{ request.path }}">войдите</a> в свой аккаунт</p>
+    </div>
+  {% endif %}
 
   {% if comments %}
   <div class="comments-list">

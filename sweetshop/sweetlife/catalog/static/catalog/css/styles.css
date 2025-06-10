@@ -345,7 +345,201 @@ html, body {
     flex-direction: column;
     gap: 20px;
 }
+/* Стили для формы добавления десерта */
+.form-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
 
+.form-container h1 {
+    color: #5e1e1e;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.modern-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modern-form .form-group {
+    margin-bottom: 0;
+}
+
+.modern-form .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #5e1e1e;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.modern-form input[type="text"],
+.modern-form input[type="number"],
+.modern-form textarea,
+.modern-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d68f8f;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.modern-form input[type="text"]:focus,
+.modern-form input[type="number"]:focus,
+.modern-form textarea:focus,
+.modern-form select:focus {
+    outline: none;
+    border-color: #945454;
+    box-shadow: 0 0 0 3px rgba(148, 84, 84, 0.1);
+}
+
+.modern-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.modern-form input[type="file"] {
+    padding: 10px;
+    border: 2px dashed #d68f8f;
+    border-radius: 8px;
+    background-color: #f8f5f5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modern-form input[type="file"]:hover {
+    border-color: #945454;
+    background-color: #fff8f8;
+}
+
+.modern-form .form-error {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.modern-form .form-actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.modern-form .btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    background: #d68f8f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modern-form .btn:hover {
+    background: #945454;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(148, 84, 84, 0.2);
+}
+
+.modern-form .btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+/* Стили для сообщения об авторизации */
+.auth-message {
+    background: #f8f5f5;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #d68f8f;
+}
+
+.auth-message p {
+    color: #5e1e1e;
+    font-size: 16px;
+    margin: 0;
+}
+
+.auth-message a {
+    color: #945454;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-message a:hover {
+    color: #d68f8f;
+    text-decoration: underline;
+}
+/* Стили для страницы благодарности */
+.thank-you-container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.thank-you-content h1 {
+    color: #5e1e1e;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.thank-you-content p {
+    color: #666;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.thank-you-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.thank-you-actions .btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.thank-you-actions .btn-primary {
+    background: #d68f8f;
+    color: white;
+}
+
+.thank-you-actions .btn-primary:hover {
+    background: #945454;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(148, 84, 84, 0.2);
+}
+
+.thank-you-actions .btn-secondary {
+    background: #f8f5f5;
+    color: #5e1e1e;
+    border: 1px solid #d68f8f;
+}
+
+.thank-you-actions .btn-secondary:hover {
+    background: #f0e8e8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(148, 84, 84, 0.1);
+}
 .dessert-image {
     width: 400px;
     height: 400px;

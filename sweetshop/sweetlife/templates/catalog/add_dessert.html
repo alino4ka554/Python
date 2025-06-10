@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>{{title}}</h1>
-<form action="" method="post" novalidate enctype="multipart/form-data"> 
-    {% csrf_token %}
-    <div class="form-error">{{ form.non_field_errors }}</div>
-    {% for f in form %}
-    <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
-    <div class="form-error">{{ f.errors }}</div>
-    {% endfor %}      
-   <button type="submit">Добавить</button></p>
-</form>
+<div class="form-container">
+    <h1>{{title}}</h1>
+    <form action="" method="post" novalidate enctype="multipart/form-data" class="modern-form"> 
+        {% csrf_token %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in form %}
+        <div class="form-group">
+            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+            {{ f }}
+            <div class="form-error">{{ f.errors }}</div>
+        </div>
+        {% endfor %}      
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Добавить десерт</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

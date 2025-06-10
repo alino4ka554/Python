@@ -113,7 +113,7 @@ class AddComment(LoginRequiredMixin, CreateView):
         return redirect('cake', cake_slug=self.kwargs['cake_slug'])
 
 
-class UpdateDessert(PermissionRequiredMixin, UpdateView):
+class UpdateDessert(PermissionRequiredMixin, DataMixin, UpdateView):
     model = Dessert
     template_name = 'catalog/add_dessert.html'
     success_url = reverse_lazy('index')
@@ -191,10 +191,14 @@ class FavoriteDesserts(LoginRequiredMixin, DataMixin, ListView):
     def get_queryset(self):
         return Dessert.objects.filter(likes__user=self.request.user).select_related('category')
     
+class ThankYouView(DataMixin, TemplateView):
+    template_name = 'catalog/thank_you.html'
+    title_cake = 'Спасибо за отзыв!'
+
 class ContactView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = FeedbackForm
     template_name = 'catalog/contact.html'
-    success_url = reverse_lazy('contact')
+    success_url = reverse_lazy('thank_you')  # Изменяем URL перенаправления
     title_cake = 'Обратная связь'
 
     def form_valid(self, form):
@@ -211,6 +215,7 @@ class FeedbackListView(ListView):
     template_name = 'catalog/feedback_list.html'
     context_object_name = 'feedbacks'
     ordering = ['-created_at']
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

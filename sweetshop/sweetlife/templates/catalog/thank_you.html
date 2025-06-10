@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="thank-you-container">
+    <div class="thank-you-content">
+        <h1>Спасибо за ваш отзыв!</h1>
+        <p>Мы ценим ваше мнение и обязательно его учтем.</p>
+        <div class="thank-you-actions">
+            <a href="{% url 'feedback_list' %}" class="btn btn-primary">Посмотреть все отзывы</a>
+            <a href="{% url 'index' %}" class="btn btn-secondary">Вернуться на главную</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

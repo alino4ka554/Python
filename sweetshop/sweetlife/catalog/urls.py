@@ -23,4 +23,5 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', views.DeleteComment.as_view(), name='delete_comment'),
     path('feedback/', views.FeedbackListView.as_view(), name='feedback_list'),
     path('feedback/edit/<int:pk>/', views.EditFeedbackView.as_view(), name='edit_feedback'),
+    path('feedback/thank-you/', views.ThankYouView.as_view(), name='thank_you'),
 ]
