@@ -23,6 +23,15 @@
           </button>
         </div>
         {% endif %}
+        {% if perms.catalog.change_dessert %}
+        <a href="{% url 'edit_dessert' cake.slug %}" class="edit-dessert-btn">Редактировать</a>
+        {% endif %}
+        {% if perms.catalog.delete_dessert %}
+        <form method="post" action="{% url 'delete_dessert' cake.slug %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="delete-dessert-btn" onclick="return confirm('Вы уверены, что хотите удалить этот десерт?')">Удалить</button>
+        </form>
+        {% endif %}
       </div>
 
       <div class="dessert-price">
@@ -65,7 +74,7 @@
           {% if comment.author.photo %}
             <img src="{{ comment.author.photo.url }}" alt="{{ comment.author.username }}" class="comment-avatar">
           {% else %}
-            <img src="{{ default_image }}" alt="{{ comment.author.username }}" class="comment-avatar">
+            <img src="{{ default_image }}" class="comment-avatar">
           {% endif %}
           <div class="comment-author-details">
             <span class="comment-author">{{ comment.author.username|default:"неизвестен" }}</span>

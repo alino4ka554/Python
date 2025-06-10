@@ -56,7 +56,6 @@ class DessertAdmin(admin.ModelAdmin):
                           messages.WARNING)
 
 
-
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')

@@ -24,7 +24,7 @@ menu = [
     {'title': "Обратная связь", 'url_name': 'contact'},
 ]
 
-class CaralogIndex(DataMixin, ListView):
+class CatalogIndex(DataMixin, ListView):
     template_name = 'catalog/index.html'
     context_object_name = 'cakes'
 
@@ -78,6 +78,7 @@ class ShowCake(DataMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.all()
         context['comment_form'] = CommentForm()
+        context['default_image'] = settings.DEFAULT_USER_IMAGE
         return self.get_mixin_context(context, title=context['cake'])
     
     def get_object(self, queryset=None):
@@ -215,4 +216,18 @@ class FeedbackListView(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Отзывы'
         context['default_image'] = settings.DEFAULT_USER_IMAGE
+        return context
+
+class EditFeedbackView(LoginRequiredMixin, UpdateView):
+    model = Feedback
+    form_class = FeedbackForm
+    template_name = 'catalog/edit_feedback.html'
+    success_url = reverse_lazy('feedback_list')
+
+    def get_queryset(self):
+        return Feedback.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактировать отзыв'
         return context

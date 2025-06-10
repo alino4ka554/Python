@@ -10,9 +10,20 @@
                 {% for feedback in feedbacks %}
                     <div class="feedback-item">
                         <div class="feedback-header">
-                            <img src="{{ feedback.user.photo.url }}">
-                            <span class="feedback-user">{{ feedback.user.username }}</span>
-                            <span class="feedback-date">{{ feedback.created_at|date:"d.m.Y H:i" }}</span>
+                            <div class="feedback-user-info">
+                                {% if feedback.user.photo %}
+                                <img src="{{ feedback.user.photo.url }}">
+                                {% else %}
+                                <img src="{{ default_image }}">
+                                {% endif %}
+                                <span class="feedback-user">{{ feedback.user.username }}</span>
+                            </div>
+                            <div class="feedback-meta">
+                                <span class="feedback-date">{{ feedback.created_at|date:"d.m.Y H:i" }}</span>
+                                {% if user == feedback.user %}
+                                    <a href="{% url 'edit_feedback' feedback.id %}" class="edit-feedback-btn">Редактировать</a>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="feedback-message">{{ feedback.message }}</div>
                     </div>

@@ -5,7 +5,7 @@ from catalog import views, converters
 register_converter(converters.DessertSlugConverter, 'dessert')
 
 urlpatterns = [
-    path('', views.CaralogIndex.as_view(), name='index'),
+    path('', views.CatalogIndex.as_view(), name='index'),
     path('category/<slug:category_slug>/', views.DessertCategory.as_view(),
          name='category'),
     path('dessert/<dessert:name>/', views.dessert_detail, name='dessert_detail'),
@@ -22,4 +22,5 @@ urlpatterns = [
     path('cake/<slug:cake_slug>/comment/', views.AddComment.as_view(), name='add_comment'),
     path('comment/<int:pk>/delete/', views.DeleteComment.as_view(), name='delete_comment'),
     path('feedback/', views.FeedbackListView.as_view(), name='feedback_list'),
+    path('feedback/edit/<int:pk>/', views.EditFeedbackView.as_view(), name='edit_feedback'),
 ]
